@@ -65,11 +65,11 @@ The framework is **model-agnostic** and requires specific integrations to bridge
 
 The framework uses a factory pattern to switch between providers via the `LLM_PROVIDER` and `MODEL_NAME` environment variables.
 
-*   **OpenAI**: Standard for high-reasoning tasks. Use `gpt-4o` or `gpt-4o-mini`.
-*   **Anthropic**: Excellent for long-context and technical writing. Use `claude-3-5-sonnet-20240620`.
-*   **Google (Gemini)**: Powerful multimodal capabilities. Use `gemini-1.5-pro` or `gemini-1.5-flash`.
-*   **Groq**: Ultra-fast inference for quick iterations. Supports `llama3-70b-8192` and `mixtral-8x7b-32768`.
-*   **Ollama (Local)**: Ideal for private, offline, or cost-sensitive environments. Supports `llama3`, `mistral`, `phi3`.
+*   **OpenAI**: Standard for high-reasoning tasks. Use `gpt-5.4` or `gpt-5.3-garlic`.
+*   **Anthropic**: Excellent for long-context and technical writing. Use `claude-4.6-opus` or `claude-4.6-sonnet`.
+*   **Google (Gemini)**: Powerful multimodal capabilities. Use `gemini-3.1-pro` or `gemini-3.1-flash-lite`.
+*   **Groq**: Ultra-fast inference for quick iterations. Supports `llama-4-scout` and `gpt-oss-120b`.
+*   **Ollama (Local)**: Ideal for private, offline, or cost-sensitive environments. Supports `llama4`, `mistral-v2`, `phi4`.
 
 **Why?** Being model-agnostic prevents vendor lock-in and allows you to optimize for cost, speed, or privacy depending on the environment (e.g., local development vs. production CI).
 </details>
