@@ -1,8 +1,7 @@
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage
 from core.telemetry import track_metrics
 from core.state import AgentState
-
-from langchain_core.prompts import ChatPromptTemplate
+from core.llm import get_llm
 
 # Role: SDLC Architect & Orchestrator
 # Goal: Receive initial requirements, understand context, create a step-by-step implementation/testing plan, and delegate tasks.
@@ -19,8 +18,6 @@ Current Plan: {plan}
 2. If a worker finished, decide if the next worker should start or if the process is complete.
 """
 
-from core.llm import get_llm
-
 @track_metrics(agent_name="Supervisor")
 def entrypoint_node(state: AgentState, config: dict):
     """
@@ -30,13 +27,11 @@ def entrypoint_node(state: AgentState, config: dict):
     messages = state.get("messages", [])
     last_message = messages[-1].content if messages else ""
     
-    # Initialize the LLM dynamically
-    llm = get_llm()
-    
     # Simple logic to determine if we need a plan
     if not state.get("plan"):
         # Real LLM call example (commented out to preserve your mock flow, 
         # but ready to be enabled):
+        # llm = get_llm()
         # prompt = ChatPromptTemplate.from_template(SUPERVISOR_PROMPT)
         # chain = prompt | llm
         # result = chain.invoke({"requirement": last_message, "plan": ""})
