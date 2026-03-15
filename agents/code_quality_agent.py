@@ -1,18 +1,9 @@
 from langchain_core.messages import SystemMessage
+from langchain_core.runnables import RunnableConfig
 from core.telemetry import track_metrics
 from core.state import AgentState
 
 # Role: Code Quality Gate Agent (Reviewer)
-# Goal: Run static analysis, linting, and code reviews. 
-# Mandate: Guarantee high-quality code and compliance with PR mandates before any code is approved for Pull Request creation.
-# Resources: Linting rules, code complexity thresholds.
-CODE_QUALITY_PROMPT = """You are a Code Quality Reviewer. 
-Analyze the generated automation code.
-Perform static analysis and identify issues (linting, complexity, security vulnerabilities).
-Your review acts as a final gate before the Pull Request is created.
-"""
-
-from langchain_core.runnables import RunnableConfig
 
 @track_metrics(agent_name="CodeQualityGate")
 def code_quality_node(state: AgentState, config: RunnableConfig | None = None):

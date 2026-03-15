@@ -1,23 +1,9 @@
 from langchain_core.messages import SystemMessage
+from langchain_core.runnables import RunnableConfig
 from core.telemetry import track_metrics
 from core.state import AgentState
 
 # Role: SDLC Architect & Orchestrator
-# Goal: Receive initial requirements, understand context, create a step-by-step implementation/testing plan, and delegate tasks.
-# Mandates: Human-in-the-Loop (HITL) for all plans and Pull Request (PR) only for all code changes.
-SUPERVISOR_PROMPT = """You are the Entrypoint Architect. 
-Your goal is to coordinate a team of QE agents while strictly adhering to these mandates:
-1. HUMAN-IN-THE-LOOP (HITL): You must NEVER execute a plan until a human has explicitly approved it.
-2. PULL REQUEST ONLY: All code changes proposed by your workers must be submitted via Pull Request. Direct merges are strictly prohibited.
-
-Initial Requirement: {requirement}
-Current Plan: {plan}
-
-1. If no plan exists, create one with steps for: Manual QA, Automation Architecture, Engineering, Code Quality, and Documentation.
-2. If a worker finished, decide if the next worker should start or if the process is complete.
-"""
-
-from langchain_core.runnables import RunnableConfig
 
 @track_metrics(agent_name="Supervisor")
 def entrypoint_node(state: AgentState, config: RunnableConfig | None = None):

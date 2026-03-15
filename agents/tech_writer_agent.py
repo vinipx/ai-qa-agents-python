@@ -1,16 +1,9 @@
 from langchain_core.messages import SystemMessage
+from langchain_core.runnables import RunnableConfig
 from core.telemetry import track_metrics
 from core.state import AgentState
 
 # Role: Technical Writer Agent (Documenter)
-# Goal: Format, write, update, and maintain all project, framework, and test documentation.
-# Resources: Project artifacts, code comments, architecture diagrams.
-TECH_WRITER_PROMPT = """You are a Technical Writer. 
-Update README.md and documentation based on the automation changes.
-Ensure all new tests and framework updates are clearly documented.
-"""
-
-from langchain_core.runnables import RunnableConfig
 
 @track_metrics(agent_name="TechnicalWriter")
 def tech_writer_node(state: AgentState, config: RunnableConfig | None = None):
