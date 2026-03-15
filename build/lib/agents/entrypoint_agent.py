@@ -18,7 +18,7 @@ Current Plan: {plan}
 """
 
 @track_metrics(agent_name="Supervisor")
-def entrypoint_node(state: AgentState, config: dict | None = None):
+def entrypoint_node(state: AgentState, config: dict):
     """
     Entrypoint / Architect Agent (Supervisor).
     Orchestrates tasks, plans execution, and requires Human-in-the-Loop.

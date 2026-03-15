@@ -16,7 +16,7 @@ Target Repo: {repo_url}
 """
 
 @track_metrics(agent_name="TestAutomationEngineer")
-def test_auto_engineer_node(state: AgentState, config: dict | None = None):
+def test_auto_engineer_node(state: AgentState, config: dict):
     """
     Test Automation Engineer Agent.
     Writes and maintains automated test scripts based on the plan.

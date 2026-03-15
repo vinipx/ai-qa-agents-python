@@ -12,20 +12,18 @@ def track_metrics(agent_name: str):
     """
     def decorator(func):
         @wraps(func)
-        def wrapper(state, config=None, *args, **kwargs):
+        def wrapper(state, config, *args, **kwargs):
             start_time = time.time()
             
-            # Simulated token tracking
+            # Simulated token tracking (in real usage, extract from Langchain RunTree/Callbacks)
+            # e.g., using get_openai_callback() or similar based on provider
             tokens_used = {"input": 150, "output": 50} 
             
             # Simulated cost calculation
             cost = (tokens_used["input"] * 0.000005) + (tokens_used["output"] * 0.000015)
             
-            # Execute the node function, passing config if it was provided
-            if config is not None:
-                result = func(state, config, *args, **kwargs)
-            else:
-                result = func(state, *args, **kwargs)
+            # Execute the node function
+            result = func(state, config, *args, **kwargs)
             
             lead_time = time.time() - start_time
             

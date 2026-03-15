@@ -11,7 +11,7 @@ Propose a Test Automation Framework (TAF) strategy including Tools, Reporting, G
 """
 
 @track_metrics(agent_name="TestAutomationArchitect")
-def test_auto_architect_node(state: AgentState, config: dict | None = None):
+def test_auto_architect_node(state: AgentState, config: dict):
     """
     Test Automation Architect Agent.
     Designs frameworks, strategies, and reporting structures.

@@ -11,7 +11,7 @@ Ensure all new tests and framework updates are clearly documented.
 """
 
 @track_metrics(agent_name="TechnicalWriter")
-def tech_writer_node(state: AgentState, config: dict | None = None):
+def tech_writer_node(state: AgentState, config: dict):
     """
     Technical Writer Agent.
     Maintains project and framework documentation.

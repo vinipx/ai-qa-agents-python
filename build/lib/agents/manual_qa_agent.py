@@ -14,7 +14,7 @@ Reference JIRA Source: {jira_url}
 """
 
 @track_metrics(agent_name="ManualQAExpert")
-def manual_qa_node(state: AgentState, config: dict | None = None):
+def manual_qa_node(state: AgentState, config: dict):
     """
     Manual QA Expert Agent.
     Creates, updates, and maintains comprehensive manual test cases.

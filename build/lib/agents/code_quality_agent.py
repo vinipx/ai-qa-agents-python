@@ -13,7 +13,7 @@ Your review acts as a final gate before the Pull Request is created.
 """
 
 @track_metrics(agent_name="CodeQualityGate")
-def code_quality_node(state: AgentState, config: dict | None = None):
+def code_quality_node(state: AgentState, config: dict):
     """
     Code Quality Gate Agent.
     Runs static code analysis, linting, and code reviews.
