@@ -1,0 +1,44 @@
+name: 🚀 CI Pipeline
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📂 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: 🛠️ Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install .
+
+      - name: 🔍 Lint with ruff
+        run: |
+          # ruff check .
+          # We'll run it and let it fail if there are issues.
+          ruff check .
+
+      - name: 🧪 Run Unit & Integration Tests
+        run: |
+          # Run pytest with coverage report
+          pytest --cov=. --cov-report=xml
+
+      - name: 📊 Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}

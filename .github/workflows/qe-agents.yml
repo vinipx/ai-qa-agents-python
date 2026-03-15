@@ -1,0 +1,48 @@
+name: 🤖 AI QE Orchestrator
+
+on:
+  workflow_dispatch:
+    inputs:
+      requirement:
+        description: 'What do you want the agents to do?'
+        required: true
+        default: 'Analyze the current repository and suggest a test automation strategy.'
+
+jobs:
+  qe-orchestration:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📂 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: 🛠️ Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install .
+
+      - name: 🚀 Run Multi-Agent QE Framework
+        env:
+          # LLM Config
+          LLM_PROVIDER: ${{ vars.LLM_PROVIDER || 'openai' }}
+          MODEL_NAME: ${{ vars.MODEL_NAME || 'gpt-4o' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          
+          # QE Context
+          JIRA_URL: ${{ vars.JIRA_URL }}
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+          
+          # Repo Details
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_PROVIDER: 'github'
+        run: |
+          # Use 'yes' to automatically approve the plan in CI
+          echo "yes" | python main.py
