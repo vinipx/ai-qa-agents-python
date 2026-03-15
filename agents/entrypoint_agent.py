@@ -1,7 +1,6 @@
 from langchain_core.messages import SystemMessage
 from core.telemetry import track_metrics
 from core.state import AgentState
-from core.llm import get_llm
 
 # Role: SDLC Architect & Orchestrator
 # Goal: Receive initial requirements, understand context, create a step-by-step implementation/testing plan, and delegate tasks.
