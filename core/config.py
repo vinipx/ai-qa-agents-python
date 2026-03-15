@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     openai_api_key: str | None = os.getenv("OPENAI_API_KEY", None)
     anthropic_api_key: str | None = os.getenv("ANTHROPIC_API_KEY", None)
     google_api_key: str | None = os.getenv("GOOGLE_API_KEY", None)
+    groq_api_key: str | None = os.getenv("GROQ_API_KEY", None)
     
     # Requirement Tracking (e.g., JIRA)
     jira_url: str | None = os.getenv("JIRA_URL", None)
