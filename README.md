@@ -58,23 +58,50 @@ graph TD
 
 ## ⚙️ Configuration & Integration
 
-The framework is **model-agnostic** and requires specific integrations to bridge the gap between requirements and code.
+The framework is **model-agnostic** and requires specific integrations to bridge the gap between requirements and code. Use the sections below to understand the required setup.
 
-### 1. LLM Agnostic Design
-Switch between providers effortlessly by updating your `.env`:
-*   **OpenAI**: GPT-4o, GPT-3.5-turbo.
-*   **Anthropic**: Claude 3.5 Sonnet.
-*   **Ollama (Local)**: Run private, small models like Llama3 or Mistral for local testing.
+<details>
+<summary><b>1. LLM Providers (Agnostic Design)</b></summary>
 
-### 2. Integration Support (The "Why")
-*   **Requirement Tracking (Jira)**: Agents need access to Jira to fetch User Stories, Acceptance Criteria, and Features. This ensures that the generated tests are directly mapped to business requirements.
-*   **Version Control (GitHub/GitLab/Bitbucket)**: This is where agents "perform" their work. They need repository access to analyze existing codebases and, most importantly, to **propose changes via Pull Requests**.
-*   **Observability**: Integrated with **LangSmith** for full execution tracing, helping teams debug agent reasoning and monitor token costs.
+The framework uses a factory pattern to switch between providers via the `LLM_PROVIDER` and `MODEL_NAME` environment variables.
 
-### 3. Authentication & Permissions
-To enable the agents to interact with your repositories:
-*   **GitHub**: Requires a **Personal Access Token (PAT)** with `repo` scopes. In GitHub Actions, the built-in `GITHUB_TOKEN` is used by default.
-*   **GitLab/Bitbucket**: Requires an **Access Token** with `write_repository` and `api` permissions to create branches and open Merge Requests.
+*   **OpenAI**: Standard for high-reasoning tasks. Use `gpt-4o` or `gpt-4o-mini`.
+*   **Anthropic**: Excellent for long-context and technical writing. Use `claude-3-5-sonnet-20240620`.
+*   **Google (Gemini)**: Powerful multimodal capabilities. Use `gemini-1.5-pro` or `gemini-1.5-flash`.
+*   **Groq**: Ultra-fast inference for quick iterations. Supports `llama3-70b-8192` and `mixtral-8x7b-32768`.
+*   **Ollama (Local)**: Ideal for private, offline, or cost-sensitive environments. Supports `llama3`, `mistral`, `phi3`.
+
+**Why?** Being model-agnostic prevents vendor lock-in and allows you to optimize for cost, speed, or privacy depending on the environment (e.g., local development vs. production CI).
+</details>
+
+<details>
+<summary><b>2. Requirement Tracking (Jira)</b></summary>
+
+*   **Variables**: `JIRA_URL`, `JIRA_TOKEN`.
+*   **Setup**: Requires the base URL of your Atlassian instance and a Personal Access Token.
+
+**Why?** Agents need access to Jira to fetch User Stories, Acceptance Criteria, and Features. This ensures that the generated tests are directly mapped to the "source of truth" for business requirements, maintaining strict alignment between code and product goals.
+</details>
+
+<details>
+<summary><b>3. Version Control & PR Automation (GitHub/GitLab)</b></summary>
+
+*   **Variables**: `REPO_URL`, `REPO_TOKEN`, `REPO_PROVIDER`.
+*   **Authentication**: 
+    *   **GitHub**: Personal Access Token (PAT) with `repo` scope.
+    *   **GitLab**: Access Token with `write_repository` and `api` permissions.
+
+**Why?** This is where agents "perform" their work. They analyze the existing codebase to ensure architectural consistency and, most importantly, they **propose changes via Pull Requests**. By forcing all changes through PRs, we maintain a mandatory human review gate.
+</details>
+
+<details>
+<summary><b>4. Observability & Telemetry (LangSmith)</b></summary>
+
+*   **Variables**: `LANGCHAIN_TRACING_V2`, `LANGCHAIN_API_KEY`, `LANGCHAIN_PROJECT`.
+*   **Setup**: Create a project in [LangSmith](https://smith.langchain.com/).
+
+**Why?** Industrial-grade agentic systems require deep observability. LangSmith allows you to trace every step of the agent's reasoning, visualize the LangGraph execution flow, and monitor token consumption/costs in real-time.
+</details>
 
 ---
 
