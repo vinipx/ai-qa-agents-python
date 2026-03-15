@@ -17,8 +17,10 @@ Current Plan: {plan}
 2. If a worker finished, decide if the next worker should start or if the process is complete.
 """
 
+from langchain_core.runnables import RunnableConfig
+
 @track_metrics(agent_name="Supervisor")
-def entrypoint_node(state: AgentState, config: dict | None = None):
+def entrypoint_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Entrypoint / Architect Agent (Supervisor).
     Orchestrates tasks, plans execution, and requires Human-in-the-Loop.

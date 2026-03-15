@@ -12,8 +12,10 @@ Perform static analysis and identify issues (linting, complexity, security vulne
 Your review acts as a final gate before the Pull Request is created.
 """
 
+from langchain_core.runnables import RunnableConfig
+
 @track_metrics(agent_name="CodeQualityGate")
-def code_quality_node(state: AgentState, config: dict | None = None):
+def code_quality_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Code Quality Gate Agent.
     Runs static code analysis, linting, and code reviews.

@@ -15,8 +15,10 @@ Your work must be prepared as a new branch/commit ready for Pull Request (PR) re
 Target Repo: {repo_url}
 """
 
+from langchain_core.runnables import RunnableConfig
+
 @track_metrics(agent_name="TestAutomationEngineer")
-def test_auto_engineer_node(state: AgentState, config: dict | None = None):
+def test_auto_engineer_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Test Automation Engineer Agent.
     Writes and maintains automated test scripts based on the plan.

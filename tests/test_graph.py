@@ -48,5 +48,12 @@ def test_graph_execution_flow_to_manual_qa():
     
     # Check that ManualQAExpert was at least triggered
     assert "ManualQAExpert" in result["metrics"]
-    # Check that we proceeded to TestAutomationArchitect (next in sequence)
-    assert result["next_agent"] == "TestAutomationArchitect"
+    
+    # Check that all agents in the sequence were triggered
+    assert "TestAutomationArchitect" in result["metrics"]
+    assert "TestAutomationEngineer" in result["metrics"]
+    assert "CodeQualityGate" in result["metrics"]
+    assert "TechnicalWriter" in result["metrics"]
+    
+    # Check that we reached the end of the sequence
+    assert result["next_agent"] == "FINISH"

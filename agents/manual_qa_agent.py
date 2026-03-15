@@ -13,8 +13,10 @@ Generate comprehensive test cases (Functional and Non-Functional).
 Reference JIRA Source: {jira_url}
 """
 
+from langchain_core.runnables import RunnableConfig
+
 @track_metrics(agent_name="ManualQAExpert")
-def manual_qa_node(state: AgentState, config: dict | None = None):
+def manual_qa_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Manual QA Expert Agent.
     Creates, updates, and maintains comprehensive manual test cases.

@@ -10,8 +10,10 @@ Update README.md and documentation based on the automation changes.
 Ensure all new tests and framework updates are clearly documented.
 """
 
+from langchain_core.runnables import RunnableConfig
+
 @track_metrics(agent_name="TechnicalWriter")
-def tech_writer_node(state: AgentState, config: dict | None = None):
+def tech_writer_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Technical Writer Agent.
     Maintains project and framework documentation.

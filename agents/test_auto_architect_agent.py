@@ -10,8 +10,10 @@ Analyze the current requirements and manual test cases.
 Propose a Test Automation Framework (TAF) strategy including Tools, Reporting, Governance, and CI/CD integration.
 """
 
+from langchain_core.runnables import RunnableConfig
+
 @track_metrics(agent_name="TestAutomationArchitect")
-def test_auto_architect_node(state: AgentState, config: dict | None = None):
+def test_auto_architect_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Test Automation Architect Agent.
     Designs frameworks, strategies, and reporting structures.
