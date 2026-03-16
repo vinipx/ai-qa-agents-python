@@ -19,7 +19,7 @@ async def entrypoint_node(state: AgentState, config: RunnableConfig | None = Non
     approved = state.get("approved", False)
     current_sender = state.get("sender", "User")
     
-    logger.info(f"--- Supervisor Entry ---")
+    logger.info("--- Supervisor Entry ---")
     logger.info(f"Sender: {current_sender} | Approved: {approved} | Has Plan: {bool(state.get('plan'))}")
 
     # 1. PLAN GENERATION PHASE

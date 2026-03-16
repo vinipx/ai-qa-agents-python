@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from graph import compile_graph
@@ -6,7 +6,6 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 import uuid
 import json
-import asyncio
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -61,7 +60,8 @@ async def websocket_endpoint(websocket: WebSocket, thread_id: str):
                     }
                 else:
                     logger.info(f"Action: PROMPT for {thread_id}")
-                    if not requirement: continue
+                    if not requirement:
+                        continue
                     
                     payload = {
                         "messages": [HumanMessage(content=requirement)],
@@ -126,8 +126,10 @@ async def websocket_endpoint(websocket: WebSocket, thread_id: str):
         logger.info(f"WS Disconnected: {thread_id}")
     except Exception as e:
         logger.error(f"Error in WS loop: {str(e)}", exc_info=True)
-        try: await websocket.send_json({"type": "error", "content": f"SYSTEM_ERR: {str(e)}"})
-        except: pass
+        try:
+            await websocket.send_json({"type": "error", "content": f"SYSTEM_ERR: {str(e)}"})
+        except Exception:
+            pass
 
 if __name__ == "__main__":
     import uvicorn

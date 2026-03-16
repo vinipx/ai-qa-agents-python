@@ -1,7 +1,6 @@
 import time
 from functools import wraps
 import logging
-import asyncio
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
