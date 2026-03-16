@@ -1,11 +1,13 @@
-from graph import create_graph
+import pytest
+from graph import compile_graph
 from langchain_core.messages import HumanMessage
 
-def test_graph_execution_first_step():
+@pytest.mark.asyncio
+async def test_graph_execution_first_step():
     """
     Integration test: first step (Planning)
     """
-    app = create_graph()
+    app = compile_graph()
     initial_state = {
         "messages": [HumanMessage(content="test req")],
         "plan": "",
@@ -15,16 +17,17 @@ def test_graph_execution_first_step():
         "sender": "User"
     }
     
-    result = app.invoke(initial_state)
+    result = await app.ainvoke(initial_state)
     
     assert result["plan"] != ""
     assert result["approved"] is False
 
-def test_graph_execution_flow_to_manual_qa():
+@pytest.mark.asyncio
+async def test_graph_execution_flow_to_manual_qa():
     """
     Integration test: flow from approval to ManualQA
     """
-    app = create_graph()
+    app = compile_graph()
     
     # State as if supervisor just finished planning
     state = {
@@ -36,15 +39,7 @@ def test_graph_execution_flow_to_manual_qa():
         "sender": "User"
     }
     
-    # Run the graph
-    # This should:
-    # 1. Start at Supervisor
-    # 2. Supervisor sees approved and routes to ManualQAExpert (sets next_agent="ManualQAExpert")
-    # 3. Conditional edge routes to ManualQAExpert
-    # 4. ManualQAExpert runs and reports back to Supervisor
-    # 5. Supervisor decides next step...
-    
-    result = app.invoke(state)
+    result = await app.ainvoke(state)
     
     # Check that ManualQAExpert was at least triggered
     assert "ManualQAExpert" in result["metrics"]
