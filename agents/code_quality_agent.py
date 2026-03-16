@@ -1,12 +1,12 @@
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
-from core.telemetry import track_metrics
+from core.telemetry import async_track_metrics
 from core.state import AgentState
 
 # Role: Code Quality Gate Agent (Reviewer)
 
-@track_metrics(agent_name="CodeQualityGate")
-def code_quality_node(state: AgentState, config: RunnableConfig | None = None):
+@async_track_metrics(agent_name="CodeQualityGate")
+async def code_quality_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Code Quality Gate Agent.
     Runs static code analysis, linting, and code reviews.

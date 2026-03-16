@@ -7,9 +7,10 @@ from agents.test_auto_architect_agent import test_auto_architect_node
 from agents.code_quality_agent import code_quality_node
 from agents.tech_writer_agent import tech_writer_node
 
-def route(state: AgentState):
+async def route(state: AgentState):
     """
     Determine the next node to execute based on supervisor's decision.
+    (Async version to support AsyncSqliteSaver)
     """
     if not state.get("approved"):
         # Wait for HITL
@@ -30,7 +31,6 @@ def route(state: AgentState):
     elif next_agent == "FINISH":
         return END
         
-    # If no recognized next step, return to supervisor or end
     return END
 
 def create_graph():
@@ -39,7 +39,7 @@ def create_graph():
     """
     workflow = StateGraph(AgentState)
     
-    # Add nodes
+    # Add nodes (All nodes are now async)
     workflow.add_node("Supervisor", entrypoint_node)
     workflow.add_node("ManualQAExpert", manual_qa_node)
     workflow.add_node("TestAutomationArchitect", test_auto_architect_node)
@@ -51,6 +51,7 @@ def create_graph():
     workflow.set_entry_point("Supervisor")
     
     # Supervisor routes tasks to agents
+    # LangGraph supports async functions for conditional edges
     workflow.add_conditional_edges(
         "Supervisor",
         route,
@@ -71,4 +72,11 @@ def create_graph():
     workflow.add_edge("CodeQualityGate", "Supervisor")
     workflow.add_edge("TechnicalWriter", "Supervisor")
     
-    return workflow.compile()
+    return workflow
+
+def compile_graph(checkpointer=None):
+    """
+    Compile the workflow with an optional checkpointer.
+    """
+    workflow = create_graph()
+    return workflow.compile(checkpointer=checkpointer)

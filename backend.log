@@ -1,0 +1,11 @@
+/Users/Vinicius_Fagundes/Documents/coding/vinipx/ai-qa-agents-python/.venv/lib/python3.14/site-packages/langchain_core/_api/deprecation.py:25: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
+  from pydantic.v1.fields import FieldInfo as FieldInfoV1
+INFO:     Started server process [93535]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:54624 - "WebSocket /ws/9zog7e" [accepted]
+INFO:QORE_API:WS Connected: 9zog7e
+INFO:     connection open
+INFO:     connection closed
+INFO:QORE_API:WS Disconnected: 9zog7e

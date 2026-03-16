@@ -1,14 +1,14 @@
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
-from core.telemetry import track_metrics
+from core.telemetry import async_track_metrics
 from core.state import AgentState
 
 from core.config import settings
 
 # Role: Manual QA Expert Agent
 
-@track_metrics(agent_name="ManualQAExpert")
-def manual_qa_node(state: AgentState, config: RunnableConfig | None = None):
+@async_track_metrics(agent_name="ManualQAExpert")
+async def manual_qa_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Manual QA Expert Agent.
     Creates, updates, and maintains comprehensive manual test cases.

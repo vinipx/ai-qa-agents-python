@@ -1,12 +1,12 @@
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
-from core.telemetry import track_metrics
+from core.telemetry import async_track_metrics
 from core.state import AgentState
 
 # Role: Technical Writer Agent (Documenter)
 
-@track_metrics(agent_name="TechnicalWriter")
-def tech_writer_node(state: AgentState, config: RunnableConfig | None = None):
+@async_track_metrics(agent_name="TechnicalWriter")
+async def tech_writer_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Technical Writer Agent.
     Maintains project and framework documentation.

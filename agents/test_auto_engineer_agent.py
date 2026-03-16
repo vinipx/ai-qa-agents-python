@@ -1,14 +1,14 @@
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
-from core.telemetry import track_metrics
+from core.telemetry import async_track_metrics
 from core.state import AgentState
 
 from core.config import settings
 
 # Role: Test Automation Engineer Agent (Builder)
 
-@track_metrics(agent_name="TestAutomationEngineer")
-def test_auto_engineer_node(state: AgentState, config: RunnableConfig | None = None):
+@async_track_metrics(agent_name="TestAutomationEngineer")
+async def test_auto_engineer_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Test Automation Engineer Agent.
     Writes and maintains automated test scripts based on the plan.

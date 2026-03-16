@@ -1,0 +1,83 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  # Trigger the workflow on pushes to the main branch
+  push:
+    branches:
+      - main
+    # Only run if changes were made in the docs folder
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Docusaurus
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup GitHub Pages configuration
+        uses: actions/configure-pages@v4
+
+      # Docusaurus needs the correct baseUrl for GitHub pages. 
+      # Since it's currently hardcoded to '/' in docusaurus.config.ts for local dev,
+      # we temporarily update it for the CI build using sed.
+      - name: Inject CI Base URL
+        run: |
+          sed -i "s|baseUrl: '/',|baseUrl: '/ai-qa-agents-python/',|g" docusaurus.config.ts
+
+      - name: Build website
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/build
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

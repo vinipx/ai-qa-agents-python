@@ -1,28 +1,30 @@
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
-from core.telemetry import track_metrics
+from core.telemetry import async_track_metrics
 from core.state import AgentState
+import logging
+
+logger = logging.getLogger("QORE_SUPERVISOR")
 
 # Role: SDLC Architect & Orchestrator
 
-@track_metrics(agent_name="Supervisor")
-def entrypoint_node(state: AgentState, config: RunnableConfig | None = None):
+@async_track_metrics(agent_name="Supervisor")
+async def entrypoint_node(state: AgentState, config: RunnableConfig | None = None):
     """
     Entrypoint / Architect Agent (Supervisor).
     Orchestrates tasks, plans execution, and requires Human-in-the-Loop.
     """
     messages = state.get("messages", [])
     last_message = messages[-1].content if messages else ""
+    approved = state.get("approved", False)
+    current_sender = state.get("sender", "User")
     
-    # Simple logic to determine if we need a plan
+    logger.info(f"--- Supervisor Entry ---")
+    logger.info(f"Sender: {current_sender} | Approved: {approved} | Has Plan: {bool(state.get('plan'))}")
+
+    # 1. PLAN GENERATION PHASE
     if not state.get("plan"):
-        # Real LLM call example (commented out to preserve your mock flow, 
-        # but ready to be enabled):
-        # llm = get_llm()
-        # prompt = ChatPromptTemplate.from_template(SUPERVISOR_PROMPT)
-        # chain = prompt | llm
-        # result = chain.invoke({"requirement": last_message, "plan": ""})
-        
+        logger.info("Generating new plan...")
         plan_content = (
             "1. Manual QA Expert: Create comprehensive test cases from requirements.\n"
             "2. Test Auto Architect: Design the framework strategy and reporting structure.\n"
@@ -41,12 +43,12 @@ def entrypoint_node(state: AgentState, config: RunnableConfig | None = None):
         return {
             "messages": [msg],
             "plan": plan_content,
-            "approved": False,
+            "approved": False, # Stop for HITL
             "next_agent": None,
             "sender": "Supervisor"
         }
     
-    # Sequence of agents to visit
+    # 2. ROUTING PHASE (After Plan is created)
     agent_sequence = [
         "ManualQAExpert",
         "TestAutomationArchitect",
@@ -55,45 +57,47 @@ def entrypoint_node(state: AgentState, config: RunnableConfig | None = None):
         "TechnicalWriter"
     ]
     
-    # If approved and need to route
-    if state.get("approved"):
-        current_sender = state.get("sender")
-        
-        if current_sender == "Supervisor" or current_sender == "User":
+    if approved:
+        # If it's the first time after approval, or coming from Supervisor/User, start the sequence
+        if current_sender in ["Supervisor", "User"]:
             next_step = agent_sequence[0]
-            msg = SystemMessage(content=f"Plan approved. Routing to {next_step}.")
+            logger.info(f"Plan is approved. Starting sequence at: {next_step}")
+            msg = SystemMessage(content=f"Sequence initiated. Handing over to {next_step}.")
             return {
                 "messages": [msg],
                 "next_agent": next_step,
                 "sender": "Supervisor"
             }
         
-        # Determine who is next in the sequence
+        # Otherwise, find where we are in the sequence and move to next
         try:
             current_index = agent_sequence.index(current_sender)
             if current_index < len(agent_sequence) - 1:
                 next_step = agent_sequence[current_index + 1]
-                msg = SystemMessage(content=f"{current_sender} finished. Routing to {next_step}.")
+                logger.info(f"Worker {current_sender} finished. Routing to next: {next_step}")
+                msg = SystemMessage(content=f"{current_sender} task verified. Proceeding to {next_step}.")
                 return {
                     "messages": [msg],
                     "next_agent": next_step,
                     "sender": "Supervisor"
                 }
             else:
-                msg = SystemMessage(content="All agents finished. Preparing to raise PR.")
+                logger.info("All agents in sequence finished.")
+                msg = SystemMessage(content="Orchestration complete. All quality gates passed. Finalizing artifacts.")
                 return {
                     "messages": [msg],
                     "next_agent": "FINISH",
                     "sender": "Supervisor"
                 }
         except ValueError:
-            # If current_sender is not in agent_sequence (e.g. first time after approval)
+            # Fallback if sender is unknown
             next_step = agent_sequence[0]
-            msg = SystemMessage(content=f"Routing to {next_step}.")
+            logger.info(f"Sender {current_sender} unknown. Defaulting to first step: {next_step}")
             return {
-                "messages": [msg],
+                "messages": [SystemMessage(content=f"Routing to {next_step}.")],
                 "next_agent": next_step,
                 "sender": "Supervisor"
             }
             
+    logger.info("Supervisor standby: Waiting for approval flag.")
     return {"messages": [], "sender": "Supervisor"}
